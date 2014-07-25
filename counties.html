@@ -1,0 +1,50 @@
+<html>
+<head>
+</head>
+<body>
+    
+<h1>Ceremonial counties</h1>
+<p>
+Which is the red county?
+<input id="input" autofocus>
+</p>
+<p>For a hint, type 'hint'</p>
+    <object id="map" data="English_ceremonial_counties_1998.svg" style="float:left;">
+    <script src="underscore-min.js"></script>
+    <script src="underscore.string.min.js"></script>
+
+    <script>
+    // necessary
+    _.mixin(_.string.exports());
+    window.onload=function() {
+        var sdoc = document.getElementById("map").contentDocument;
+        var paths = sdoc.getElementsByTagName("path");
+        paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
+        paths = _(paths).without("Northern Ireland", "Ireland");
+        var path = _.sample(paths);
+        var oldFill = path.style.fill;
+        path.style.fill = "red";
+
+        document.getElementById("input").oninput = function()
+        {
+            if (_(this.value).clean().toLowerCase() === path.id.toLowerCase())
+            {
+                path.style.fill = oldFill;
+                path = _.sample(paths);
+                oldFill = path.style.fill;
+                path.style.fill = "red";
+                this.value = "";
+                this.placeholder = "";
+            }
+
+            if (_(this.value).clean().toLowerCase() === "hint")
+            {
+                this.placeholder = path.id;
+                this.value = "";
+                
+            }
+        };
+}
+    </script>
+</body>
+</html>
