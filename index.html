@@ -2,25 +2,38 @@
 <head>
 </head>
 <body>
-    
+<div style="float:left;">
 <h1>Ceremonial counties</h1>
 <p>
 Which is the red county?
 <input id="input" autofocus>
 </p>
-<p>For a hint, type 'hint'</p>
-    <object id="map" data="English_ceremonial_counties_1998.svg" style="float:left;">
+<p>Score: <input id="score" value="0" readonly> out of <input id="max" readonly></p>
+<p>If you get stuck, type 'hint'.</p>
+</div>
+<div >
+    <object id="map" data="English_ceremonial_counties_1998.svg" style="height:90%"> />
+</div>
     <script src="underscore-min.js"></script>
     <script src="underscore.string.min.js"></script>
-
     <script>
     // necessary
     _.mixin(_.string.exports());
     window.onload=function() {
-        var sdoc = document.getElementById("map").contentDocument;
+        var map = document.getElementById("map");
+        var sdoc = map.contentDocument;
+        var svg = sdoc.getElementsByTagName("svg")[0];
+        var score = 0;
+
+        svg.setAttribute("viewBox", "0 0 " + svg.getAttribute("width") + " " + svg.getAttribute("height"));
+        svg.removeAttribute('width');
+        svg.removeAttribute('height');
         var paths = sdoc.getElementsByTagName("path");
         paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
         paths = _(paths).without("Northern Ireland", "Ireland");
+        paths = _.toArray(paths);
+        document.getElementById("max").value = paths.length;
+
         var path = _.sample(paths);
         var oldFill = path.style.fill;
         path.style.fill = "red";
@@ -35,13 +48,16 @@ Which is the red county?
                 path.style.fill = "red";
                 this.value = "";
                 this.placeholder = "";
+                score += 1;
+                document.getElementById("score").value = score;
             }
 
             if (_(this.value).clean().toLowerCase() === "hint")
             {
                 this.placeholder = path.id;
                 this.value = "";
-                
+                score -= 1;
+                document.getElementById("score").value = score;
             }
         };
 }
