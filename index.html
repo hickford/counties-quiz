@@ -39,7 +39,12 @@ Which is the red county?
         var texts = sdoc.getElementsByTagName("text");
         _.each(texts, function(text) {
             text.style.visibility = "hidden";
-            ids_to_text[_.humanize(text.textContent).toLowerCase()] = text;
+            var id = text.textContent; // unfortunately, no spaces between text nodes (eg. CountyDurham)
+            id = _.unescapeHTML(id);  // for &amp; and the rest
+            id = id.replace("-",""); // for wrapped lines
+            id = _.humanize(id); // assuming camel case, restore spaces 
+            id = id.toLowerCase();
+            ids_to_text[id] = text;
         });
         map.style.visibility = "visible";
 
