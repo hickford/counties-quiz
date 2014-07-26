@@ -38,7 +38,6 @@ Which is the red county?
         var rejects = ["Northern Ireland", "Ireland"];
         paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
         paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
-        paths = _.first(paths, 2);
 
         ids_to_path = {};
         _.each(paths, function(path) {
