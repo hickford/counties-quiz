@@ -37,8 +37,13 @@ Which is the red county?
         paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
         paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
         //paths = _.first(paths, 2);
+
+        ids_to_path = {};
+        _.each(paths, function(path) {
+            ids_to_path[path.id.toLowerCase()] = path;
+        });
+
         paths = _.shuffle(paths);
-        id_to_path = {};
 
         document.getElementById("max").value = paths.length;
 
@@ -46,9 +51,18 @@ Which is the red county?
         var oldFill = path.style.fill;
         path.style.fill = "red";
 
+        var badPath = undefined;
+        var badPathOldFill = undefined;
+
         document.getElementById("input").oninput = function()
         {
-            if (_(this.value).clean().toLowerCase() === path.id.toLowerCase())
+            if (badPath)
+            {
+                badPath.style.fill = badPathOldFill;
+            }
+
+            var value = _(this.value).clean().toLowerCase();
+            if (value === path.id.toLowerCase())
             {
                 this.value = "";
                 this.placeholder = "";
@@ -58,17 +72,21 @@ Which is the red county?
                 path.style.fill = oldFill;
                 path = paths.pop();
 
-
                 oldFill = path.style.fill;
                 path.style.fill = "red";
             }
-
-            if (_(this.value).clean().toLowerCase() === "hint")
+            else if (value === "hint")
             {
                 this.placeholder = path.id;
                 this.value = "";
                 score -= 1;
                 document.getElementById("score").value = score;
+            }
+            else if (ids_to_path[value])
+            {
+                badPathOldFill = ids_to_path[value].style.fill;
+                ids_to_path[value].style.fill = "black";
+                badPath = ids_to_path[value];
             }
         };
 }
