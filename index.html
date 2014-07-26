@@ -2,6 +2,7 @@
 <head>
 </head>
 <body>
+<a href="https://github.com/hickford/counties-quiz"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 <div style="float:left;">
 <h1>Ceremonial counties</h1>
 <p>
@@ -25,16 +26,23 @@ Which is the red county?
         var svg = sdoc.getElementsByTagName("svg")[0];
         var score = 0;
 
+        // hack for size
+        // 
         svg.setAttribute("viewBox", "0 0 " + svg.getAttribute("width") + " " + svg.getAttribute("height"));
         svg.removeAttribute('width');
         svg.removeAttribute('height');
+
         var paths = sdoc.getElementsByTagName("path");
+        var rejects = ["Northern Ireland", "Ireland"];
         paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
-        paths = _(paths).without("Northern Ireland", "Ireland");
-        paths = _.toArray(paths);
+        paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
+        //paths = _.first(paths, 2);
+        paths = _.shuffle(paths);
+        id_to_path = {};
+
         document.getElementById("max").value = paths.length;
 
-        var path = _.sample(paths);
+        var path = paths.pop();
         var oldFill = path.style.fill;
         path.style.fill = "red";
 
@@ -42,14 +50,17 @@ Which is the red county?
         {
             if (_(this.value).clean().toLowerCase() === path.id.toLowerCase())
             {
-                path.style.fill = oldFill;
-                path = _.sample(paths);
-                oldFill = path.style.fill;
-                path.style.fill = "red";
                 this.value = "";
                 this.placeholder = "";
                 score += 1;
                 document.getElementById("score").value = score;
+
+                path.style.fill = oldFill;
+                path = paths.pop();
+
+
+                oldFill = path.style.fill;
+                path.style.fill = "red";
             }
 
             if (_(this.value).clean().toLowerCase() === "hint")
