@@ -13,7 +13,7 @@ Features
 Image credits
 ---------
 
-The map is the Wikipedia image [`English_ceremonial_counties_1998.svg`](https://commons.wikimedia.org/wiki/File:English_ceremonial_counties_1998.svg) made by 'Nilfanion and Dr Greg' and is used under a Creative Commons license.
+The map is the Wikipedia image [`English_ceremonial_counties_1998_(named).svg`](https://commons.wikimedia.org/wiki/File:English_ceremonial_counties_1998_(named).svg) made by 'Nilfanion and Dr Greg' and is used under a Creative Commons license.
 
 Future ideas
 -----

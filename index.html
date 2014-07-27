@@ -12,7 +12,7 @@
         </p>
         <p>Score: <span id="score">0</span> out of <span id="answered">0</span>.</p>
         <p>If you get stuck, type 'hint'.</p>
-        <p>For image credits and discussion, see the <a href="https://github.com/hickford/counties-quiz">GitHub page</a>.</p>
+        <p>For code and image credits, see the <a href="https://github.com/hickford/counties-quiz">GitHub page</a>.</p>
     </div>
     <div >
     <object id="map" data="English_ceremonial_counties_1998_(named).svg" style="height:95%;"/> 
@@ -67,7 +67,7 @@
         var badPath = undefined;
         var badPathOldFill = undefined;
 
-        var first = true;
+        var guesses = 0;
 
         var ask = function() {
             path.style.fill = oldFill;
@@ -76,7 +76,7 @@
             if (path) {
                 oldFill = path.style.fill;
                 path.style.fill = "red";
-                first = true;
+                guesses = 0;
             } else {
                 document.getElementById("input").placeholder = "Game over";
                 document.getElementById("input").readOnly = true;
@@ -94,7 +94,7 @@
                 answered += 1;
                 document.getElementById("answered").innerHTML = answered;
 
-                if (first) {
+                if (guesses === 0) {
                     score += 1;
                     document.getElementById("score").innerHTML = score;
                 }
@@ -110,16 +110,19 @@
             }
             else if (value === "hint")
             {
-                first = false;
-                this.placeholder = path.id;
                 this.value = "";
+                guesses += 3;
             }
             else if (ids_to_path[value])
             {
-                first = false;
+                guesses += 1;
                 badPathOldFill = ids_to_path[value].style.fill;
                 ids_to_path[value].style.fill = "black";
                 badPath = ids_to_path[value];
+            }
+
+            if (guesses >= 3) {
+                this.placeholder = path.id;
             }
         };
     }
