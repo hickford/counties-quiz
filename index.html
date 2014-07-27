@@ -1,21 +1,22 @@
 <html>
 <head>
-<title>Ceremonial counties of England quiz</title>
+    <title>Ceremonial counties of England quiz</title>
 </head>
 <body>
-<a href="https://github.com/hickford/counties-quiz"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
-<div style="float:left;">
-<h1>Ceremonial counties</h1>
-<p>
-Which is the red county?
-<input id="input" autofocus>
-</p>
-<p>If you get stuck, type 'hint'.</p>
-<p>Score: <input id="score" value="0" readonly> out of <input id="answered" readonly></p>
-</div>
-<div >
-    <object id="map" data="English_ceremonial_counties_1998_(named).svg" style="height:90%;visibility:hidden;"/> 
-</div>
+    <a href="https://github.com/hickford/counties-quiz"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+    <div style="float:left;max-width:20em;">
+        <h1>Ceremonial counties</h1>
+        <p>
+            Which is the red county?
+            <input id="input" autofocus>
+        </p>
+        <p>Score: <span id="score">0</span> out of <span id="answered">0</span>.</p>
+        <p>If you get stuck, type 'hint'.</p>
+        <p>For image credits and discussion, see the <a href="https://github.com/hickford/counties-quiz">GitHub page</a>.</p>
+    </div>
+    <div >
+    <object id="map" data="English_ceremonial_counties_1998_(named).svg" style="height:95%;"/> 
+    </div>
     <script src="underscore-min.js"></script>
     <script src="underscore.string.min.js"></script>
     <script>
@@ -46,7 +47,6 @@ Which is the red county?
             id = id.toLowerCase();
             ids_to_text[id] = text;
         });
-        map.style.visibility = "visible";
 
         var paths = sdoc.getElementsByTagName("path");
         var rejects = ["Northern Ireland", "Ireland"];
@@ -92,11 +92,11 @@ Which is the red county?
             var value = _(this.value).clean().toLowerCase();
             if (value === path.id.toLowerCase()) {
                 answered += 1;
-                document.getElementById("answered").value = answered;
+                document.getElementById("answered").innerHTML = answered;
 
                 if (first) {
                     score += 1;
-                    document.getElementById("score").value = score;
+                    document.getElementById("score").innerHTML = score;
                 }
 
                 if (ids_to_text[value]) {
@@ -122,7 +122,7 @@ Which is the red county?
                 badPath = ids_to_path[value];
             }
         };
-}
-    </script>
+    }
+</script>
 </body>
 </html>
