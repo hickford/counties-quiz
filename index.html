@@ -1,6 +1,11 @@
 <html>
 <head>
     <title>Ceremonial counties of England quiz</title>
+    <style type="text/css">
+        ul#hints { list-style: none; padding: 0; }
+        ul#hints li { display: inline; }
+        ul#hints li:after { content: ", "; } 
+    </style>
 </head>
 <body>
     <a href="https://github.com/hickford/counties-quiz"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
@@ -13,6 +18,8 @@
         <p>Score: <span id="score">0</span> out of <span id="answered">0</span>.</p>
         <p>If you get stuck, type 'hint'.</p>
         <p>For code and image credits, see the <a href="https://github.com/hickford/counties-quiz">GitHub page</a>.</p>
+        <ul id="hints" style="font-size:0.8em;visibility:hidden;">
+        </ul>
     </div>
     <div >
     <object id="map" data="English_ceremonial_counties_1998_(named).svg" style="max-height:95%;max-width:95%;"/> 
@@ -53,10 +60,24 @@
         paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
         paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
 
+        paths = _.sortBy(paths, function(path) {
+            return path.id;
+        });
+
+        var hints = document.getElementById("hints");
+
         ids_to_path = {};
+        ids_to_hints = {};
         _.each(paths, function(path) {
             ids_to_path[path.id.toLowerCase()] = path;
+
+            var hint = document.createElement("li");
+            hint.appendChild(document.createTextNode(path.id));
+            hints.appendChild(hint);
+            ids_to_hints[path.id.toLowerCase()] = hint;
         });
+
+
 
         paths = _.shuffle(paths);
 
@@ -99,6 +120,10 @@
                     document.getElementById("score").innerHTML = score;
                 }
 
+                if (ids_to_hints[value]) {
+                    ids_to_hints[value].style.color = "grey";
+                }
+
                 if (ids_to_text[value]) {
                     ids_to_text[value].style.visibility = "visible";
                 }
@@ -110,6 +135,7 @@
             }
             else if (value === "hint")
             {
+                hints.style.visibility = "visible";
                 this.value = "";
                 guesses += 3;
             }
