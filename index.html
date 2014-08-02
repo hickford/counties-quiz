@@ -44,8 +44,8 @@
         }
 
         String.prototype.lower = function() {
-            // convert to lowercase and remove spaces
-            return this.toLowerCase().replace(" ", "");
+            // convert to lowercase and remove all spaces
+            return this.toLowerCase().replace(/\s/g, '');
         };
 
 
