@@ -45,9 +45,8 @@
 
         String.prototype.lower = function() {
             // convert to lowercase and remove all spaces
-            return this.toLowerCase().replace(/\s/g, '');
+            return this.replace(/&/g,"and").replace(/\s/g, '').toLowerCase();
         };
-
 
         ids_to_text = {};
         var texts = sdoc.getElementsByTagName("text");
@@ -55,7 +54,8 @@
             text.style.visibility = "hidden";
             var id = text.textContent; // unfortunately, no spaces between text nodes (eg. CountyDurham)
             id = _.unescapeHTML(id);  // for &amp; and the rest
-            id = id.replace("-",""); // for wrapped lines
+            id = id.replace(/&/g, "And");
+            id = id.replace(/-/g,""); // for wrapped lines
             id = _.humanize(id); // assuming camel case, restore spaces 
             id = id.lower();
             ids_to_text[id] = text;
