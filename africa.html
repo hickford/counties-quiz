@@ -101,6 +101,7 @@
 
             var value = this.value.lower();
             if (value === path.id.lower()) {
+                // correct answer
                 answered += 1;
                 document.getElementById("answered").innerHTML = answered;
 
@@ -126,7 +127,7 @@
             }
             else if (ids_to_path[value])
             {
-                guesses += 1;
+                guesses += !S(path.id.lower()).startsWith(value);
                 badPathOldFill = ids_to_path[value].style.fill;
                 ids_to_path[value].style.fill = "black";
                 badPath = ids_to_path[value];
