@@ -22,7 +22,7 @@
         </ul>
     </div>
     <div >
-    <object id="map" data="Africa_1a.svg" style="max-height:95%;max-width:95%;"/> 
+    <object id="map" data="Africa_1a.svg" style="height:95%;max-height:95%;"/> 
     </div>
     <script src="underscore-min.js"></script>
     <script src="string.min.js"></script>
@@ -49,6 +49,8 @@
         paths = _(paths).reject(function(x) {return S(x.id).startsWith("path")});
         paths = _(paths).reject(function(x) {return S(x.id).startsWith("Lake")});
         paths = _(paths).reject(function(x) {return S(x.id).include("(")});
+        var rejects = ["Réunion", "Cape Verde", "São Tomé and Príncipe", "Mauritius", "Comoros", "Seychelles", "Mayotte"];
+        paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
 
         paths = _.sortBy(paths, function(path) {
             return path.id;
