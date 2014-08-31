@@ -26,11 +26,10 @@
     </div>
     <script src="underscore-min.js"></script>
     <script src="string.min.js"></script>
-    <script src="latinise.min.js" charset="utf-8"></script>
     <script>  
     String.prototype.lower = function() {
         // convert to lowercase and remove all spaces
-        return this.replace(/&/g,"and").replace(/\s/g, '').toLowerCase().latinise();
+        return S(this.replace(/&/g,"and").replace(/\s/g, '')).slugify().s;
     };
 
     window.onload=function() {
