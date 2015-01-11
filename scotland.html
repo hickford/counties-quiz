@@ -1,0 +1,164 @@
+<html>
+<head>
+    <title>Scottish council areas quiz</title>
+    <style type="text/css">
+        ul#hints { list-style: none; padding: 0; }
+        ul#hints li { display: inline; }
+        ul#hints li:after { content: ", "; } 
+    </style>
+</head>
+<body>
+    <a href="https://github.com/hickford/counties-quiz"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+    <div style="float:left;max-width:20em;">
+        <h1>Scottish council areas</h1>
+        <p>
+            Which is the red region?
+            <input id="input" autofocus>
+        </p>
+        <p>Score: <span id="score">0</span> out of <span id="answered">0</span>.</p>
+        <p>If you get stuck, type 'hint'.</p>
+        <p>For code and image credits, see the <a href="https://github.com/hickford/counties-quiz">GitHub page</a>. See also my <a href="index.html">English counties quiz</a>.</p>
+        <ul id="hints" style="font-size:0.8em;visibility:hidden;">
+        </ul>
+    </div>
+    <div >
+    <object id="map" data="Scottish_council_areas_2011.svg" style="height:100%;max-height:95%;"/> 
+    </div>
+    <script src="underscore-min.js"></script>
+    <script src="underscore.string.min.js"></script>
+    <script>
+    // necessary
+    _.mixin(_.string.exports());
+    window.onload=function() {
+        var score = 0;
+        var answered = 0;
+
+        var map = document.getElementById("map");
+        var sdoc = map.contentDocument;
+        var svg = sdoc.getElementsByTagName("svg")[0];
+
+        // hack for size
+
+        if (!svg.getAttribute("viewBox")) {
+            svg.setAttribute("viewBox", "0 0 " + svg.getAttribute("width") + " " + svg.getAttribute("height"));
+        }
+
+        String.prototype.lower = function() {
+            // convert to lowercase and remove all spaces
+            return this.replace(/&/g,"and").replace(/\s/g, '').toLowerCase();
+        };
+
+        ids_to_text = {};
+        var texts = sdoc.getElementsByTagName("text");
+        _.each(texts, function(text) {
+            text.style.visibility = "hidden";
+            var id = text.textContent; // unfortunately, no spaces between text nodes (eg. CountyDurham)
+            id = _.unescapeHTML(id);  // for &amp; and the rest
+            id = id.replace(/&/g, "And");
+            id = id.replace(/-/g,""); // for wrapped lines
+            id = _.humanize(id); // assuming camel case, restore spaces 
+            id = id.lower();
+            ids_to_text[id] = text;
+        });
+
+        var paths = sdoc.getElementsByTagName("path");
+        var rejects = ["England", "Eire", "Northern Ireland"];
+        paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
+        paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
+
+        paths = _.sortBy(paths, function(path) {
+            return path.id;
+        });
+
+        var hints = document.getElementById("hints");
+
+        ids_to_path = {};
+        ids_to_hints = {};
+        _.each(paths, function(path) {
+            ids_to_path[path.id.lower()] = path;
+
+            var hint = document.createElement("li");
+            hint.appendChild(document.createTextNode(path.id));
+            hints.appendChild(hint);
+            ids_to_hints[path.id.lower()] = hint;
+
+        });
+
+
+
+        paths = _.shuffle(paths);
+
+        var path = paths.pop();
+        var oldFill = path.style.fill;
+        path.style.fill = "red";
+
+        var badPath = undefined;
+        var badPathOldFill = undefined;
+
+        var guesses = 0;
+
+        var ask = function() {
+            path.style.fill = oldFill;
+            path = paths.pop();
+
+            if (path) {
+                oldFill = path.style.fill;
+                path.style.fill = "red";
+                guesses = 0;
+            } else {
+                document.getElementById("input").placeholder = "Game over";
+                document.getElementById("input").readOnly = true;
+            }
+        };
+
+        document.getElementById("input").oninput = function()
+        {
+            if (badPath) {
+                badPath.style.fill = badPathOldFill;
+            }
+
+            var value = _(this.value).clean().lower();
+            if (value === path.id.lower()) {
+                answered += 1;
+                document.getElementById("answered").innerHTML = answered;
+
+                if (guesses === 0) {
+                    score += 1;
+                    document.getElementById("score").innerHTML = score;
+                }
+
+                if (ids_to_hints[value]) {
+                    ids_to_hints[value].style.color = "grey";
+                }
+
+                if (ids_to_text[value]) {
+                    ids_to_text[value].style.visibility = "visible";
+                }
+
+                this.value = "";
+                this.placeholder = "";
+
+                ask();
+            }
+            else if (value === "hint")
+            {
+                hints.style.visibility = "visible";
+                this.value = "";
+                guesses += 3;
+            }
+            else if (ids_to_path[value])
+            {
+                guesses += 1;
+                badPathOldFill = ids_to_path[value].style.fill;
+                ids_to_path[value].style.fill = "black";
+                badPath = ids_to_path[value];
+            }
+
+            if (guesses >= 3) {
+                this.placeholder = path.id;
+            }
+        };
+    }
+</script>
+</body>
+</html>
