@@ -66,6 +66,13 @@
 
         paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
 
+        // fix confusing reddish colour
+        _.each(paths, function(path) {
+            if (path.style.fill === 'rgb(205, 133, 63)') {
+                path.style.fill = 'darkkhaki';
+            }
+        });
+
         var countries  = require('country-data').countries;
         countries['MK'].name = "Macedonia";
 
