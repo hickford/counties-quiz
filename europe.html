@@ -26,6 +26,7 @@
     </div>
     <script src="underscore-min.js"></script>
     <script src="underscore.string.min.js"></script>
+    <script src="bundle.js"></script>
     <script>
     // necessary
     _.mixin(_.string.exports());
@@ -62,9 +63,30 @@
         });
 
         var paths = sdoc.getElementsByTagName("path");
-        var rejects = ["Northern Ireland", "Ireland"];
+
         paths = _(paths).reject(function(x) {return _.string.startsWith(x.id, "path")});
+
+        var countries  = require('country-data').countries;
+        countries['MK'].name = "Macedonia";
+
+        // unite Russia
+        var kaliningrad = sdoc.getElementById('ru-kaliningrad');
+        var main = sdoc.getElementById('ru-main');
+        kaliningrad.setAttribute('d', kaliningrad.getAttribute('d') + ' ' + main.getAttribute('d'));
+        main.parentNode.removeChild(main);
+        kaliningrad.id = 'ru';
+
+        _.each(paths, function(path) {
+            var country = countries[path.id.toUpperCase()];
+            if (country) {
+                path.id = countries[path.id.toUpperCase()].name;
+            }
+        });
+
+        var rejects = ["San Marino", "lakes", "Monaco", "Liechtenstein", "Malta", "Andorra"];
         paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
+
+        paths = _(paths).filter(function(x) {return _.contains(x.classList, 'europe')});
 
         paths = _.sortBy(paths, function(path) {
             return path.id;
