@@ -83,11 +83,6 @@
             }
         });
 
-        var rejects = ["San Marino", "lakes", "Monaco", "Liechtenstein", "Malta", "Andorra"];
-        paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
-
-        paths = _(paths).filter(function(x) {return _.contains(x.classList, 'europe')});
-
         paths = _.sortBy(paths, function(path) {
             return path.id;
         });
@@ -95,16 +90,22 @@
         var hints = document.getElementById("hints");
 
         ids_to_path = {};
-        ids_to_hints = {};
         _.each(paths, function(path) {
             ids_to_path[path.id.lower()] = path;
+        });
 
+        var rejects = ["San Marino", "lakes", "Monaco", "Liechtenstein", "Malta", "Andorra"];
+        paths = _(paths).reject(function(x) {return _.contains(rejects, x.id)});
+
+        paths = _(paths).filter(function(x) {return _.contains(x.classList, 'europe')});
+
+        ids_to_hints = {};
+        _.each(paths, function(path) {
             var hint = document.createElement("li");
             hint.appendChild(document.createTextNode(path.id));
             hints.appendChild(hint);
             ids_to_hints[path.id.lower()] = hint;
         });
-
 
 
         paths = _.shuffle(paths);
