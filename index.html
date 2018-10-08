@@ -17,7 +17,8 @@
         </p>
         <p>Score: <span id="score">0</span> out of <span id="answered">0</span>.</p>
         <p>If you get stuck, type 'hint'.</p>
-        <p>For code and image credits, see the <a href="https://github.com/hickford/counties-quiz">GitHub page</a>. See also my <a href="africa.html">countries of Africa quiz</a>.</p>
+        <p>I made this quiz to teach where counties are, not just to list them.</p>
+        <p>For code and image credits, see the <a href="https://github.com/hickford/counties-quiz">GitHub page</a>.</p>
         <ul id="hints" style="font-size:0.8em;visibility:hidden;">
         </ul>
     </div>
@@ -47,6 +48,12 @@
             // convert to lowercase and remove all spaces
             return this.replace(/&/g,"and").replace(/\s/g, '').toLowerCase();
         };
+
+        var peasy = function(s) {
+            return s.replace(/\B\w{2,}\B/g, function (m) {
+                return _.shuffle(m).join('');
+            });
+        }
 
         ids_to_text = {};
         var texts = sdoc.getElementsByTagName("text");
@@ -141,9 +148,9 @@
             }
             else if (value === "hint")
             {
-                hints.style.visibility = "visible";
+                // hints.style.visibility = "visible";
                 this.value = "";
-                guesses += 3;
+                guesses += 2;
             }
             else if (ids_to_path[value])
             {
@@ -153,8 +160,10 @@
                 badPath = ids_to_path[value];
             }
 
-            if (guesses >= 3) {
+            if (guesses >= 4) {
                 this.placeholder = path.id;
+            } else if (guesses >= 2) {
+                this.placeholder = peasy(path.id);
             }
         };
     }
